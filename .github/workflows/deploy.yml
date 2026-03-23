@@ -16,7 +16,8 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
-        run: pip install flask pytest "numpy<2"
+        run: |
+          pip install flask pytest "numpy<2" ultralytics
       - name: Run tests
         run: cd tests && pytest test_api.py -v
 
@@ -33,8 +34,8 @@ jobs:
         run: pip install -r api/requirements.txt
       - name: Validate API
         run: |
-          cd api && timeout 10 python app.py &
-          sleep 5
+          cd api && python app.py &
+          sleep 10
           curl -f http://localhost:5000/health
           echo "API health check passed!"
 
@@ -48,5 +49,6 @@ jobs:
       - name: Deploy to OpenStack VM
         run: |
           echo "Deploying UAV Detection API to OpenStack..."
+          echo "VM Floating IP: 10.20.20.80"
           echo "Deployment triggered at $(date)"
           echo "Deploy complete!"
