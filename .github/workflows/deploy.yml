@@ -17,7 +17,9 @@ jobs:
           python-version: '3.10'
       - name: Install dependencies
         run: |
-          pip install flask pytest "numpy<2" ultralytics
+          pip install flask pytest "numpy<2"
+          pip install "ultralytics==8.0.196"
+          pip install "torch==2.0.1" "torchvision==0.15.2"
       - name: Run tests
         run: cd tests && pytest test_api.py -v
 
@@ -31,11 +33,14 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
-        run: pip install -r api/requirements.txt
-      - name: Validate API
+        run: |
+          pip install flask "numpy<2"
+          pip install "ultralytics==8.0.196"
+          pip install "torch==2.0.1" "torchvision==0.15.2"
+      - name: Validate API health endpoint
         run: |
           cd api && python app.py &
-          sleep 10
+          sleep 15
           curl -f http://localhost:5000/health
           echo "API health check passed!"
 
@@ -49,6 +54,7 @@ jobs:
       - name: Deploy to OpenStack VM
         run: |
           echo "Deploying UAV Detection API to OpenStack..."
-          echo "VM Floating IP: 10.20.20.80"
+          echo "OpenStack VM IP: 10.20.20.80"
+          echo "Services: Nova, Neutron, Glance, Keystone"
           echo "Deployment triggered at $(date)"
           echo "Deploy complete!"
